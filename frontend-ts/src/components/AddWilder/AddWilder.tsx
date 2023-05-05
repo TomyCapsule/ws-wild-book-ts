@@ -8,7 +8,8 @@ import { addWilder } from '../../api/wilder';
 
 interface AddWilderInputs {
     name: string,
-    city: string
+    city: string,
+    avatar: File
 }
 
 const AddWilder = () => {
@@ -39,6 +40,14 @@ const AddWilder = () => {
                     <label>City :</label>
                     <input
                         placeholder="input city here" {...register("city")}
+                    />
+                </div>
+
+                <div className={styles.inputContainer}>
+                    <label>Avatar :</label>
+                    <input
+                        type="file"
+                        placeholder="input city here" {...register("avatar")}
                     />
                 </div>
                 <button type="submit">Add Wilder</button>
