@@ -122,6 +122,7 @@ CardEdit.propTypes = {
     skills: PropTypes.array,
     city: PropTypes.string,
     avatar: PropTypes.string,
+    description: PropTypes.string,
     toggleEditMode: PropTypes.func
   };
 
