@@ -1,0 +1,10 @@
+.cardRow {
+  display: grid;
+  grid-template-columns: repeat(3, 32%);
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+h2 {
+  font-size: 28px;
+}

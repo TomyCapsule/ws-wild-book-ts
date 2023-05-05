@@ -1,0 +1,14 @@
+p {
+  margin: 0 0 1.15em;
+}
+
+.container {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 24px;
+}
+
+footer {
+  border-top: 2px solid #f76c6c;
+}

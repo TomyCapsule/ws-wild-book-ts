@@ -1,0 +1,60 @@
+GET http://localhost:5000/api/wilder
+
+###
+
+GET http://localhost:5000/api/wilder/all
+
+###
+
+GET http://localhost:5000/api/wilder/2
+
+###
+GET http://localhost:5000/api/wilder/findTest
+
+###
+POST http://localhost:5000/api/wilder
+Content-Type: application/json
+
+{
+    "name": "Tomy Visou",
+    "city": "London"
+}
+
+###
+
+PUT http://localhost:5000/api/wilder/avatar
+Content-Type: application/json
+
+{
+    "id": 1,
+    "avatar": "aaa"
+}
+
+###
+
+PUT http://localhost:5000/api/wilder
+Content-Type: application/json
+
+{
+    "id": 12,
+    "description": "J'aime les donuts ouuuh" 
+}
+
+###
+
+DELETE http://localhost:5000/api/wilder
+Content-Type: application/json
+
+{
+    "id": 12
+}
+
+###
+
+PUT http://localhost:5000/api/wilder/skill
+Content-Type: application/json
+
+{
+    "wilderName": "Tomy Visou",
+    "skillName": "JavaScript"
+}

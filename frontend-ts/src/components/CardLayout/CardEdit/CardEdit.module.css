@@ -1,0 +1,76 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid #c9c9c9;
+    border-radius: 7px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    position: relative;
+  }
+  
+  .card > img:first-child {
+    border-radius: 7px 7px 0 0;
+    margin-bottom: 20px;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .card h3,
+  .card h4 {
+    color: #f76c6c;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+  
+  .card h3 em {
+    padding: 0.25em;
+    background-color: #eddbff;
+    border-radius: 4px;
+  }
+  
+  .card p,
+  .card ul {
+    color: #757575;
+    line-height: 1.5;
+    min-height: 50px;
+  }
+  
+  .button {
+    /* Reset text link default */
+    text-decoration: none;
+
+    background-color: #f76c6c;
+    color: #fff;
+    padding: 0.5em 1em;
+    margin: 10px 0;
+    border-radius: 4px;
+  }
+  
+  .card .skills {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .editButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 2rem;
+  }
+  
+  .avatarContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .editInput {
+    margin: 1em 0;
+    padding: 0.5rem 0.5rem;
+  }
