@@ -2,32 +2,35 @@ import styles from "./Card.module.css";
 import SkillBadge from "./SkillBadge/SkillBadge";
 import PropTypes from "prop-types";
 import { Wilder } from "../../../types/Wilder";
-import { useContext, useState } from "react";
-import { WildersListContext } from "../../../context/WildersList";
+import { useState } from "react";
 import Avatar, { genConfig } from "react-nice-avatar";
 import CardEdit from "../CardEdit/CardEdit";
 import { useMutation } from "@apollo/client/react/hooks";
 import { DELETE_WILDER } from "../../../gql/mutations";
+import { GET_ALL_WILDERS } from "../../../gql/queries";
 
 interface CardProps extends Wilder {}
 
 const Card = ({ id, name, skills, city, avatar, description }: CardProps) => {
   const avatarConfig = genConfig(avatar);
-  const { wildersList, setWildersList } = useContext(WildersListContext);
 
   const [isEditMode, setIsEditMode] = useState(false);
   const toggleEditMode = () => setIsEditMode(!isEditMode);
 
-  const [deletedWilder] = useMutation(DELETE_WILDER);
+  const [deletedWilder] = useMutation(DELETE_WILDER, {
+    refetchQueries: [
+      {
+        query: GET_ALL_WILDERS
+      }
+    ]
+  });
 
   const handleDelete = async (): Promise<void> => {
-    const deletedWilderId = await deletedWilder({
+    await deletedWilder({
       variables:{
         id
       }
     });
-    const updatedWildersList = [...wildersList].filter(wilder => wilder.id !== deletedWilderId.data.deleteWilder);
-    setWildersList(updatedWildersList);
   };
 
   return isEditMode 

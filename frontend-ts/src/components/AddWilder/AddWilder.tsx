@@ -1,12 +1,10 @@
 import styles from './AddWilder.module.css';
 import PropTypes from 'prop-types';
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useContext } from 'react';
-import { WildersListContext } from '../../context/WildersList';
 import { gql } from "@apollo/client/core";
 import { useMutation } from "@apollo/client/react/hooks";
-import { formatWilder } from '../../utils/utils';
 import { WilderFragment } from '../../gql/fragments';
+import { GET_ALL_WILDERS } from '../../gql/queries';
 
 interface AddWilderInputs {
     name: string,
@@ -24,23 +22,23 @@ mutation createWilder($avatar: String!, $city: String!, $name: String!) {
 `
 
 const AddWilder = () => {
-    const { wildersList, setWildersList } = useContext(WildersListContext);
     const { register, handleSubmit } = useForm<AddWilderInputs>();
     
-    const [createWilder] = useMutation(ADD_WILDER);
+    const [createWilder] = useMutation(ADD_WILDER, {
+        refetchQueries:[
+            { query: GET_ALL_WILDERS }
+        ]
+    });
 
     const onSubmit : SubmitHandler<AddWilderInputs> = async ({name, city}): Promise<void> => {
-        // const newWilder = await addWilder({name, city, avatar: name} as Wilder);
-        const newWilder = await createWilder({
+        await createWilder({
             variables: {
                 name,
                 city,
                 avatar: name
             }
         })
-        const updatedWilderList = [...wildersList, formatWilder(newWilder.data.createWilder)];
-        setWildersList(updatedWilderList);
-    }
+    };
 
     return(
         <div>
