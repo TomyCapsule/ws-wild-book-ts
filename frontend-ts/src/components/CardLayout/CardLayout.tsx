@@ -3,24 +3,20 @@ import Card from "./Card/Card";
 import styles from "./CardLayout.module.css";
 import AddWilder from "../AddWilder/AddWilder";
 import { WildersListContext } from "../../context/WildersList";
-import { getWilders } from "../../api/wilder";
+import { useQuery } from "@apollo/client/react";
+import { dataManipulation } from "../../utils/utils";
+import { GET_ALL_WILDERS } from "../../gql/queries";
 
 const CardLayout = () => {
   const { wildersList, setWildersList } = useContext(WildersListContext);
+  const { loading, error, data } = useQuery(GET_ALL_WILDERS);
 
   useEffect(() => {
-    const fetchWilders = async () : Promise<void> => {
-      try{
-        const wildersResponse = await getWilders()
-        setWildersList(wildersResponse);
-      }catch(err){
-        console.log(err)
-      }
-    }
+    if(data) setWildersList(dataManipulation(data.getAllWilders))
+  }, [data])
 
-    fetchWilders();
-  },[]);
-
+  if(loading) return <p>Loading...</p>
+  if(error) return <p>{error.message}</p>
 
   return (
     <>
@@ -28,7 +24,7 @@ const CardLayout = () => {
       <h2>Wilders</h2>
       <section className={styles.cardRow}>
         {
-            wildersList.map(wilder => <Card key={wilder.id} id={wilder.id} name={wilder.name} skills={wilder.skills} city={wilder.city} avatar={wilder.avatar} description={wilder.description}/>)
+            wildersList.map((wilder: any) => <Card key={wilder.id} id={wilder.id} name={wilder.name} skills={wilder.skills} city={wilder.city} avatar={wilder.avatar} description={wilder.description}/>)
         }
       </section>
     </>

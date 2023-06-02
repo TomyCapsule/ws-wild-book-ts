@@ -4,9 +4,10 @@ import { Wilder } from "../../../types/Wilder";
 import { useContext, useState } from "react";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import { WildersListContext } from "../../../context/WildersList";
-import { editWilder } from "../../../api/wilder";
 import Avatar, { genConfig } from "react-nice-avatar";
-import { addGrades, deleteOldGrades } from "../../../api/grades";
+import { useMutation } from '@apollo/client';
+import { CREATE_GRADE, DELETE_GRADE, UPDATE_WILDER } from "../../../gql/mutations";
+import { formatWilder } from "../../../utils/utils";
 
 interface CardFormInput {
   wilder: Wilder;
@@ -33,22 +34,49 @@ const CardEdit = ({ id, name, skills, city, avatar, description, toggleEditMode 
   });
   const { fields, append, remove } = useFieldArray({ control, name: "wilder.skills" });
 
+  const [updateWilder] = useMutation(UPDATE_WILDER);
+  const [createGrade] = useMutation(CREATE_GRADE);
+  const [deleteGrade] = useMutation(DELETE_GRADE);
+
   const onSubmit: SubmitHandler<CardFormInput> = async ({
     wilder,
   }): Promise<void> => {
 
-    await addGrades({newWilderData: wilder});
-    await deleteOldGrades({oldGrades: skills, newWilderData: wilder});
+    for(const skill of wilder.skills){
+      await createGrade({
+        variables: {
+          grade: Number(skill.votes),
+          wilderId: id,
+          skill: skill.title
+        }
+      })
+    }
 
-    const updatedWilder = await editWilder({
-      id,
-      name: wilder.name,
-      city: wilder.city,
-      avatar: avatarSeed,
-      description: wilder.description
-    } as Wilder);
+    console.log('apres le creategrade');
+
+    if(skills.length > 0){
+      const gradesToDelete = skills.filter(grade => !wilder.skills.find(editedSkill => grade.title === editedSkill.title));
+      for(const grade of gradesToDelete){
+        await deleteGrade({
+          variables:{
+            skill: grade.title,
+            wilderId: id
+          }
+        })
+      }
+    }
+
+    const updatedWilder = await updateWilder({
+      variables: {
+        id,
+        name: wilder.name,
+        city: wilder.city,
+        avatar: avatarSeed,
+        description: wilder.description
+      }
+    });
     const updatedWildersList = wildersList.map((wilder) =>
-      wilder.id === id ? updatedWilder : wilder
+      wilder.id === id ? formatWilder(updatedWilder.data.updateWilder) : wilder
     );
 
     toggleEditMode();

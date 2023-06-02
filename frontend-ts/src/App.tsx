@@ -4,15 +4,17 @@ import Header from "./components/Header/Header";
 import { WildersListProvider } from "./context/WildersList";
 import MainContent from "./pages";
 
+
+
 function App() {
   return (
-    <div>
-      <Header />
-      <WildersListProvider>
-        <MainContent />
-      </WildersListProvider>
-      <Footer />
-    </div>
+      <div>
+        <Header />
+        <WildersListProvider>
+          <MainContent />
+        </WildersListProvider>
+        <Footer />
+      </div>
   );
 }
 

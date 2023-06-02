@@ -1,10 +1,12 @@
 import styles from './AddWilder.module.css';
 import PropTypes from 'prop-types';
-import { Wilder } from "../../types/Wilder";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useContext } from 'react';
 import { WildersListContext } from '../../context/WildersList';
-import { addWilder } from '../../api/wilder';
+import { gql } from "@apollo/client/core";
+import { useMutation } from "@apollo/client/react/hooks";
+import { formatWilder } from '../../utils/utils';
+import { WilderFragment } from '../../gql/fragments';
 
 interface AddWilderInputs {
     name: string,
@@ -12,13 +14,31 @@ interface AddWilderInputs {
     avatar: File
 }
 
+const ADD_WILDER = gql`
+${WilderFragment}
+mutation createWilder($avatar: String!, $city: String!, $name: String!) {
+  createWilder(avatar: $avatar, city: $city, name: $name) {
+    ...WilderFragment
+  }
+}
+`
+
 const AddWilder = () => {
     const { wildersList, setWildersList } = useContext(WildersListContext);
     const { register, handleSubmit } = useForm<AddWilderInputs>();
     
+    const [createWilder] = useMutation(ADD_WILDER);
+
     const onSubmit : SubmitHandler<AddWilderInputs> = async ({name, city}): Promise<void> => {
-        const newWilder = await addWilder({name, city, avatar: name} as Wilder);
-        const updatedWilderList = [...wildersList, newWilder];
+        // const newWilder = await addWilder({name, city, avatar: name} as Wilder);
+        const newWilder = await createWilder({
+            variables: {
+                name,
+                city,
+                avatar: name
+            }
+        })
+        const updatedWilderList = [...wildersList, formatWilder(newWilder.data.createWilder)];
         setWildersList(updatedWilderList);
     }
 
@@ -43,13 +63,6 @@ const AddWilder = () => {
                     />
                 </div>
 
-                <div className={styles.inputContainer}>
-                    <label>Avatar :</label>
-                    <input
-                        type="file"
-                        placeholder="input city here" {...register("avatar")}
-                    />
-                </div>
                 <button type="submit">Add Wilder</button>
             </form>
         </div>

@@ -4,9 +4,10 @@ import PropTypes from "prop-types";
 import { Wilder } from "../../../types/Wilder";
 import { useContext, useState } from "react";
 import { WildersListContext } from "../../../context/WildersList";
-import { deleteWilder } from "../../../api/wilder";
 import Avatar, { genConfig } from "react-nice-avatar";
 import CardEdit from "../CardEdit/CardEdit";
+import { useMutation } from "@apollo/client/react/hooks";
+import { DELETE_WILDER } from "../../../gql/mutations";
 
 interface CardProps extends Wilder {}
 
@@ -17,11 +18,18 @@ const Card = ({ id, name, skills, city, avatar, description }: CardProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const toggleEditMode = () => setIsEditMode(!isEditMode);
 
+  const [deletedWilder] = useMutation(DELETE_WILDER);
+
   const handleDelete = async (): Promise<void> => {
-    const deletedWilderId = await deleteWilder(id);
-    const updatedWildersList = [...wildersList].filter(wilder => wilder.id !== deletedWilderId);
+    const deletedWilderId = await deletedWilder({
+      variables:{
+        id
+      }
+    });
+    const updatedWildersList = [...wildersList].filter(wilder => wilder.id !== deletedWilderId.data.deleteWilder);
     setWildersList(updatedWildersList);
   };
+
   return isEditMode 
     ? <CardEdit id={id} name={name} city={city} skills={skills} avatar={avatar} description={description} toggleEditMode={toggleEditMode} /> 
     : (
@@ -39,9 +47,9 @@ const Card = ({ id, name, skills, city, avatar, description }: CardProps) => {
           </p>
           <h4>Wild Skills</h4>
           <ul className={styles.skills}>
-            {skills.map((skill) => (
+            {skills.map((skill, idx) => (
               <SkillBadge
-                key={skill.title}
+                key={idx}
                 title={skill.title}
                 votes={skill.votes}
               />
