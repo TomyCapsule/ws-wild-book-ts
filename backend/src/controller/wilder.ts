@@ -145,7 +145,6 @@ async function formatWilder(id: number) : Promise<FormattedWilder | null> {
         console.error(err);
         return null
     }
-    
 }
 
 export default wilderController;
